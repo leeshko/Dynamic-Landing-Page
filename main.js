@@ -20,13 +20,13 @@ function changeBackground() {
     let fullTimeNow = new Date();
     let hours = fullTimeNow.getHours();
     if (hours < 11) {
-        document.body.style.backgroundImage = "url(../img/morning.jpg)";
+        document.body.style.backgroundImage = "url(img/morning.jpg)";
         greeting.textContent = 'Good Morning, ';
     } else if (hours < 18) {
-        document.body.style.backgroundImage = "url(../img/noon.jpg)";
+        document.body.style.backgroundImage = "url(img/noon.jpg)";
         greeting.textContent = 'Good Afternoon, ';
     } else {
-        document.body.style.backgroundImage = 'url(../img/evening.jpg)';
+        document.body.style.backgroundImage = 'url(img/evening.jpg)';
         document.body.style.color = 'purple';
         greeting.textContent = 'Good Evening, ';
     }
