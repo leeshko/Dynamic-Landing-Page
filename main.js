@@ -2,18 +2,21 @@ let time = document.getElementById('time');
 let name = document.getElementById('name');
 let focus = document.getElementById('focus');
 
+let timeWithZero = (timeUnit) => timeUnit < 10 ? ('0' + timeUnit) : timeUnit;
 
 function showTime() {
     let fullTimeNow = new Date();
-    let hours = fullTimeNow.getHours();
+    let hoursEur = fullTimeNow.getHours();
+    let amPm = hoursEur < 13 ? 'AM' : 'PM';
+    let hours = hoursEur>12 ? hoursEur%12 : hoursEur;
     let minutes = fullTimeNow.getMinutes();
     let seconds = fullTimeNow.getSeconds();
-    let timeWithZero = (e) => e < 10 ? ('0' + e) : e;
-    let amPm = (hours) => hours < 13 ? 'AM' : 'PM';
-    let timeNow = timeWithZero(`${hours}`) + ':' + timeWithZero(`${minutes}`) + ':' + timeWithZero(`${seconds}`) +' ' + amPm();
     
-    setTimeout(showTime, 1000);
+    let timeNow = `${timeWithZero(hours)}:${timeWithZero(minutes)}:${timeWithZero(seconds)} ${amPm}`;
+    changeBackground();
     time.innerHTML = timeNow;
+
+    setTimeout(showTime, 1000);
 }
 
 function changeBackground() {
@@ -32,52 +35,35 @@ function changeBackground() {
     }
 }
 
-function nameStorage() {
-    if(localStorage.getItem('name') === null) {
-        name.textContent = '[enter your name]';    
+function getTextContentFromStorage(itemName, item) {
+    if (localStorage.getItem(itemName) === null) {
+        item.textContent = `[enter your ${itemName}]`;
     } else {
-        name.textContent = localStorage.getItem('name');
+        item.textContent = localStorage.getItem(itemName);
     }
 }
 
-function focusStorage() {
-    if(localStorage.getItem('focus') === null) {
-        focus.textContent = '[enter your focus]';    
-    } else {
-        focus.textContent = localStorage.getItem('focus');
-    }
-}
-
-function setName(e) {
-    if (e.type === 'keydown') {
-        if(e.key === 'Enter') {
-            localStorage.setItem('name', e.target.innerText);
-            name.blur();
+function setBehaviour (itemName, item) {
+   return function (e) {
+        if (e.type === 'keydown') {
+            if (e.key === 'Enter') {
+                item.blur();
+            }
+        } else {
+            localStorage.setItem(itemName, e.target.innerText);
         }
-    } else {
-        localStorage.setItem('name', e.target.innerText);
-    }
-}
-
-function setFocus(e) {
-    if (e.type === 'keydown') {
-        if(e.key === 'Enter') {
-            localStorage.setItem('focus', e.target.innerText);
-            focus.blur();
-        }
-    } else {
-        localStorage.setItem('focus', e.target.innerText);
     }
 }
 
 
-name.addEventListener('keydown', setName);
-name.addEventListener('blur', setName);
-focus.addEventListener('keydown', setFocus);
-focus.addEventListener('blur', setFocus);
+name.addEventListener('keydown', setBehaviour('name', name));
+name.addEventListener('blur', setBehaviour('name', name));
+focus.addEventListener('keydown', setBehaviour('focus', focus));
+focus.addEventListener('blur', setBehaviour('focus', focus));
 
 
 showTime();
-changeBackground();
-nameStorage();
-focusStorage(); 
+getTextContentFromStorage('name', name);
+getTextContentFromStorage('focus', focus); 
+
+
